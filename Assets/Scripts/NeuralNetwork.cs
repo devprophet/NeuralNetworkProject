@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 
 public class NeuralNetwork {
 
-	// la valeurs des neuronnes d'entrée
+	// la valeur des neuronnes d'entrée
 	private float[] 	Input;
-	// la valeurs des neuronnes de la couche cachée
+	// la valeur des neuronnes de la couche cachée
 	private float[][] Hidden;
 	// la valeur des neuronnes de la couche de sortie
 	private float[] 	Output;
