@@ -13,14 +13,14 @@ public class NeuralNetwork {
 	// la valeur des neuronnes d'entrée
 	private float[] 	Input;
 	// la valeur des neuronnes de la couche cachée
-	private float[][] Hidden;
+	private float[][] 	Hidden;
 	// la valeur des neuronnes de la couche de sortie
 	private float[] 	Output;
 
 	// la valeur des poids de la couche d'entrée
-	private float[][] 	Wi;
+	public float[][] 	Wi { get; private set; }
 	// la valeur des poids de la couche cachée
-	private float[][][] Wh;
+	public float[][][] 	Wh { get; private set; }
 
 	// Le nombre de neurones en entrée
 	public int InputsCount;
@@ -45,40 +45,28 @@ public class NeuralNetwork {
 		this.HiddenLayersNeuronsCount 	= HiddenLayersNeuronsCount;
 		this.OutputsCount 				= OutputsCount;
 
-		/*
-			Initialise le nombre de neurones dans le layers d'entrée.
-		*/
+		/* Initialise le nombre de neurones dans le layers d'entrée. */
 		this.Input 	= new float[this.InputsCount];
 
-		/* 
-			Initialise le nombre de layers dans la partie cachée.
-		*/
+		/* Initialise le nombre de layers dans la partie cachée. */
 		this.Hidden = new float[this.HiddenLayersCount][];
 
-		/*
-			Initialise le nombre de neurones dans chaque layers de la partie cachée.
-		*/
+		/* Initialise le nombre de neurones dans chaque layers de la partie cachée. */
 		for(int i = 0; i < this.Hidden.Length; i++) {
 			this.Hidden[i] = new float[this.HiddenLayersNeuronsCount[i]];
 		}
 
-		/*
-			Initialise le nombre de neurones dans le layers de sortie.
-		*/
+		/* Initialise le nombre de neurones dans le layers de sortie. */
 		this.Output = new float[OutputsCount];
 		
-		/* 
-			Initialise le nombre de dentries qui relie le layers d'entrée et le premier layer de la couche cachée. 
-		*/
+		/* Initialise le nombre de dentries qui relie le layers d'entrée et le premier layer de la couche cachée. */
 		this.Wi = new float[this.InputsCount][];
 		for(int i = 0; i < this.Wi.Length; i++) {
 			this.Wi[i] = new float[this.Hidden[0].Length];
 		}
 
-		/* 
-			Initialise le nombre de dentries qui relie chaque layers de la face cachée entre eux.
-			NOTE : Initialise aussi les poids qui relie la derniere couche caché avec la couche de sortie!
-		*/
+		/* Initialise le nombre de dentries qui relie chaque layers de la face cachée entre eux.
+		   NOTE : Initialise aussi les poids qui relie la derniere couche caché avec la couche de sortie! */
 		this.Wh = new float[this.HiddenLayersCount][][];
 		for(int i = 0; i < this.HiddenLayersCount; i++) {
 			this.Wh[i] = new float[this.HiddenLayersNeuronsCount[i]][];
@@ -99,38 +87,26 @@ public class NeuralNetwork {
 		this.HiddenLayersNeuronsCount 	= save.HiddenLayersNeuronsCount;
 		this.OutputsCount 				= save.OutputsCount;
 
-		/*
-			Initialise le nombre de neurones dans le layers d'entrée.
-		*/
+		/* Initialise le nombre de neurones dans le layers d'entrée. */
 		this.Input 	= new float[this.InputsCount];
 
-		/* 
-			Initialise le nombre de layers dans la partie cachée.
-		*/
+		/* Initialise le nombre de layers dans la partie cachée. */
 		this.Hidden = new float[this.HiddenLayersCount][];
 
-		/*
-			Initialise le nombre de neurones dans chaque layers de la partie cachée.
-		*/
+		/* Initialise le nombre de neurones dans chaque layers de la partie cachée. */
 		for(int i = 0; i < this.Hidden.Length; i++) {
 			this.Hidden[i] = new float[this.HiddenLayersNeuronsCount[i]];
 		}
 
-		/*
-			Initialise le nombre de neurones dans le layers de sortie.
-		*/
+		/* Initialise le nombre de neurones dans le layers de sortie. */
 		this.Output = new float[OutputsCount];
 		
-		/* 
-			Initialise le nombre de dentries qui relie le layers d'entrée et le premier layer de la couche cachée. 
-		*/
-		this.Wi = save.WeigthInputs;
+		/* Initialise le nombre de dentries qui relie le layers d'entrée et le premier layer de la couche cachée. */
+		this.Wi = save.WeightInputs;
 
-		/* 
-			Initialise le nombre de dentries qui relie chaque layers de la face cachée entre eux.
-			NOTE : Initialise aussi les poids qui relie la derniere couche caché avec la couche de sortie!
-		*/
-		this.Wh = save.WeigthHidden;
+		/* Initialise le nombre de dentries qui relie chaque layers de la face cachée entre eux.
+		   NOTE : Initialise aussi les poids qui relie la derniere couche caché avec la couche de sortie! */
+		this.Wh = save.WeightHidden;
 	}
 
 	/// <summary>
@@ -138,7 +114,7 @@ public class NeuralNetwork {
 	/// <param name="min">La valeur minimum du poids de chaque neurones.</param>
 	/// <param name="max">La valeur maximum du poids de chaque neurones.</param>
 	/// </summary>
-	public void InitializeWeigth(float min = -1f, float max = 1f) {
+	public void InitializeWeight(float min = -1f, float max = 1f) {
 
 		/* 
 			Initialise les poids qui relie le layer d'entrée au permier layer caché
@@ -161,6 +137,26 @@ public class NeuralNetwork {
 			}
 		}
 
+	}
+
+	/// <summary>
+	/// Initialise les poids des neurones a partir d'un adn.
+	/// <param name="dna">L'adn qui contient les données suffisante pour initialiser le reseau de neurones</param>
+	/// </summary>
+	public void InitializeWeight(DNA dna) {
+
+		int index = -1;
+
+		/* Ajoute a la liste les poids entres les neurones d'entrée et le premier layer de la couche caché */
+		for ( int i = 0; i < Wi.Length; i++ )
+			for ( int j = 0; j < Wi[i].Length; j++ )
+				Wi[i][j] = dna.genes[(index += 1)];
+
+		/* Ajoute a la liste les poids des entres les layers de la couche cachée ainsi que ceux entre le layer de sortie et la couche caché */
+		for(int i = 0; i < Wh.Length; i++ )
+			for( int j = 0; j < Wh[i].Length; j++ )
+				for( int k = 0; k < Wh[i][j].Length; k++ )
+					Wh[i][j][k] = dna.genes[(index += 1)];
 	}
 
 	/// <summary>
@@ -187,9 +183,7 @@ public class NeuralNetwork {
 		}
 
 		if(Hidden.Length > 1) {
-			/* 
-				Propagation du premiers layer de la couche vers le layer de sortie
-			*/
+			/* Propagation du premiers layer de la couche vers le layer de sortie */
 			for(int i = 1; i < Hidden.Length; i++) {
 				for(int j = 0; j < Hidden[i].Length; j++) {
 					for(int k = 0; k <  Hidden[i - 1].Length; k++) {
@@ -198,11 +192,16 @@ public class NeuralNetwork {
 					Hidden[i][j] = sigmoid(Hidden[i][j]);
 				}
 			}
+
+			for(int i = 0; i < Output.Length; i++) {
+				for(int j = 0; j < Hidden[Hidden.Length - 1].Length; j++) {
+					Output[i] += Wh[Wh.Length - 1][j][i] * Hidden[Hidden.Length - 1][j];
+				}
+				Output[i] = sigmoid(Output[i]);
+			}
 		}
 		else {
-			/*
-				Propagation du layer cahcée vers le layer de sortie.
-			*/
+			/* Propagation du layer cahcée vers le layer de sortie. */
 			for(int i = 0; i < Output.Length; i++) {
 				for(int j = 0; j < Hidden[0].Length; j++) {
 					Output[i] += Wh[0][j][i] * Hidden[0][j];
@@ -236,8 +235,10 @@ public class NeuralNetwork {
 		save.HiddenLayersCount 			= HiddenLayersCount;
 		save.HiddenLayersNeuronsCount 	= HiddenLayersNeuronsCount;
 		save.OutputsCount 				= OutputsCount;
-		save.WeigthInputs 				= Wi;
-		save.WeigthHidden 				= Wh;
+		save.WeightInputs 				= Wi;
+		save.WeightHidden 				= Wh;
+
+		save.dna 						= new DNA(this);
 
 		return save;
 	}
@@ -258,10 +259,13 @@ public struct NeuralSave {
 	public int OutputsCount;
 
 	// Tous les poids entre le layer d'entrée et le premier layer de la couche cachée
-	public float[][] WeigthInputs;
+	public float[][] WeightInputs;
 
 	// Tous les poids entre tous les layers de la couche cachée ainsi que entre le dernier layer de la couche cacher et du layer de sortie.
-	public float[][][] WeigthHidden;
+	public float[][][] WeightHidden;
+
+	// L'adn du reseau de neurones.
+	public DNA dna;
 
 	/// <summary>
 	/// Retourne un json du contenue de cette structure.
@@ -275,13 +279,16 @@ public struct NeuralSave {
 	/// <param name="json">Le contenue d'un fichier json</param>
 	/// </summary>
 	public void FromJson(string json) {
+
 		NeuralSave s = JsonConvert.DeserializeObject<NeuralSave>(json);
 		this.InputsCount 				= s.InputsCount;
 		this.HiddenLayersCount 			= s.HiddenLayersCount;
 		this.HiddenLayersNeuronsCount 	= s.HiddenLayersNeuronsCount;
 		this.OutputsCount				= s.OutputsCount;
-		this.WeigthInputs 				= s.WeigthInputs;
-		this.WeigthHidden 				= s.WeigthHidden;
+		this.WeightInputs 				= s.WeightInputs;
+		this.WeightHidden 				= s.WeightHidden;
+		this.dna 						= s.dna;
+
 	}
 
 }

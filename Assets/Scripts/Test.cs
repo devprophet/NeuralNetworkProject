@@ -15,7 +15,7 @@ public class Test : MonoBehaviour {
 		NeuralNetwork n = new NeuralNetwork(4, 1, new int[]{ 4 }, 2);
 
 		/* Initialise le poids des dentries */
-		n.InitializeWeigth();
+		n.InitializeWeight();
 
 		/* Présente a l'entrée des valeurs */
 		n.SetInput(new float[]{0, 1, 0, 1});
@@ -66,6 +66,8 @@ public class Test : MonoBehaviour {
 		save.FromJson(System.Text.Encoding.UTF8.GetString(dataRead.ToArray()));
 
 		n = new NeuralNetwork(save);
+
+		n.InitializeWeight(save.dna);
 
 		/* Présente a l'entrée des valeurs */
 		n.SetInput(new float[]{0, 1, 0, 1});
